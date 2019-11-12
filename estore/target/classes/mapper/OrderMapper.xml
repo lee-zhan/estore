@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.app.estore.mapper.OrderMapper">
+  
+  
+  <resultMap id="BaseResultMap" type="com.briup.app.estore.bean.Order">
+    <id column="orderId" jdbcType="INTEGER" property="id" />
+    <result column="cost" jdbcType="DOUBLE" property="cost" />
+    <result column="orderDate" jdbcType="DATE" property="orderdate" />
+    <collection property="orderlines" resultMap="LineResult" /> 
+  </resultMap>
+  
+	<resultMap type="com.briup.app.estore.bean.Orderline" id="LineResult"> 
+	  <id column="lineId" property="id" /> 
+	  <result column="NUM" property="num" /> 
+	  <association property="book" resultMap="BookResult" /> 
+	</resultMap> 
+	
+	<resultMap type="com.briup.app.estore.bean.Book" id="BookResult"> 
+ 	 <id column="bookId" property="id" /> 
+ 	 <result column="NAME" property="name" /> 
+ 	 <result column="PRICE" property="price" /> 
+	</resultMap>
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
+    delete from tbl_order
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  
+  <insert id="insert" parameterType="com.briup.app.estore.bean.Order" useGeneratedKeys="true" keyProperty="id">
+    insert into tbl_order (id, cost, orderDate, 
+      customer_id)
+    values (#{id,jdbcType=INTEGER}, #{cost,jdbcType=DOUBLE}, #{orderdate,jdbcType=DATE}, 
+      #{cutormer.id,jdbcType=INTEGER})
+  </insert>
+  
+  <update id="updateByPrimaryKey" parameterType="com.briup.app.estore.bean.Order">
+    update tbl_order
+    set cost = #{cost,jdbcType=DOUBLE},
+      orderDate = #{orderdate,jdbcType=DATE},
+      customer_id = #{customerId,jdbcType=INTEGER}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <select id="selectByPrimaryKey" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select id, cost, orderDate, customer_id
+    from tbl_order
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  <select id="selectAll" resultMap="BaseResultMap">
+    select id, cost, orderDate, customer_id
+    from tbl_order
+  </select>
+  
+  <!--查询出来的列名不能一致 否则一多封装时由于列明都相同会封装错数据  -->
+    <select id="selectByCustomerId" parameterType="java.lang.Integer" resultMap="BaseResultMap">
+    select 
+    	o.id as orderId, o.cost, o.orderDate, o.customer_id,
+    	l.id as lineId,l.num,l.order_id,l.book_id,
+    	b.id as bookId,b.name,b.price
+    from 
+    	tbl_order o left outer join tbl_orderline l
+    	on o.id=l.order_id
+    	left outer join tbl_book b on b.id=l.book_id
+    where customer_id = #{id,jdbcType=INTEGER}
+  </select>
+  
+  
+</mapper>
