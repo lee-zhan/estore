@@ -18,7 +18,9 @@ import com.briup.app.estore.bean.Customer;
 import com.briup.app.estore.bean.Order;
 import com.briup.app.estore.bean.Orderline;
 import com.briup.app.estore.shoppingcart.ShoppingCart;
-
+/*
+ * 添加购物车
+ * */
 @WebServlet("/addorder")
 public class AddOrderlineServlet extends HttpServlet{
 
