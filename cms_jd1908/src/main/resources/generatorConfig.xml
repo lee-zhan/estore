@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE generatorConfiguration
+  PUBLIC "-//mybatis.org//DTD MyBatis Generator Configuration 1.0//EN"
+  "http://mybatis.org/dtd/mybatis-generator-config_1_0.dtd">
+<!-- mybatis-generator的核心配置文件 -->
+<generatorConfiguration>
+
+  <!--<classPathEntry location="D:\gg\repository\mysql\mysql-connector-java\8.0.16\mysql-connector-java-8.0.16.jar" />-->
+  <classPathEntry location="D:\mvn_repo\mysql\mysql-connector-java\8.0.18\mysql-connector-java-8.0.18.jar" />
+  <context id="DB2Tables" targetRuntime="MyBatis3">
+
+    <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
+        connectionURL="jdbc:mysql://127.0.0.1/cms?serverTimezone=Asia/Shanghai"
+        userId="lee"
+        password="lee123">
+      <!--产生selectByPrimaryKey-->
+      <property name="useInformationSchema" value="true" />
+    </jdbcConnection>
+
+    <javaTypeResolver >
+      <property name="forceBigDecimals" value="false" />
+    </javaTypeResolver>
+
+    <javaModelGenerator targetPackage="com.briup.apps.cms.bean" targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+      <property name="trimStrings" value="true" />
+    </javaModelGenerator>
+
+    <sqlMapGenerator targetPackage="mapper"  targetProject="./src/main/resources">
+      <property name="enableSubPackages" value="true" />
+    </sqlMapGenerator>
+
+    <javaClientGenerator type="XMLMAPPER" targetPackage="com.briup.apps.cms.dao"  targetProject="./src/main/java">
+      <property name="enableSubPackages" value="true" />
+    </javaClientGenerator>
+
+<!--桥表不一定需要关联实体类  -->
+   <!--  <table tableName="base_privilege" domainObjectName="Privilege" ></table>
+    <table tableName="base_role" domainObjectName="Role" ></table>
+    <table tableName="base_user" domainObjectName="User" ></table>
+    <table tableName="cms_article" domainObjectName="Article" ></table>
+    <table tableName="cms_category" domainObjectName="Category" ></table> -->
+    
+    <table tableName="base_user_role" domainObjectName="UserRole" ></table>
+    <table tableName="base_role_privilege" domainObjectName="RolePrivilege" ></table>
+    
+    <!-- <table tableName="cms_logs" domainObjectName="Logs" ></table> -->
+    <!-- <table tableName="cms_article" domainObjectName="Article" >
+    	<columnOverride column="content" javaType="java.lang.String" jdbcType="VARCHAR"></columnOverride>
+    	<columnOverride column="source" javaType="java.lang.String" jdbcType="VARCHAR"></columnOverride>
+    </table> -->
+
+  </context>
+</generatorConfiguration>

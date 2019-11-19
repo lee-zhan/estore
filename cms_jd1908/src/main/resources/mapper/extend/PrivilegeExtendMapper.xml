@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.PrivilegeExtendMapper">
+ 
+ <!--根据id查该角色拥有的权限  -->
+ <select id="selectByRoleId" resultType="com.briup.apps.cms.bean.Privilege">
+ 	SELECT p.*
+ 	FROM base_privilege p, base_role_privilege rp
+ 	WHERE p.id=rp.privilege_id
+ 		  and
+ 		  rp.role_id=#{id,jdbcType=BIGINT}
+ </select>
+ 
+ <!--查询一级权限级联查询出二级权限  -->
+ <select id="selectAll" resultMap="selectAllWithSons">
+ 	SELECT *
+ 	FROM base_privilege
+ </select>
+  <select id="selectByParentId" parameterType="long" resultType="com.briup.apps.cms.bean.extend.PrivilegeExtend">
+    SELECT *
+    FROM base_privilege
+    WHERE parent_id = #{id,jdbcType=BIGINT}
+  </select>
+  <resultMap 
+  	id="selectAllWithSons" 
+  	type="com.briup.apps.cms.bean.extend.PrivilegeExtend"
+  	extends="com.briup.apps.cms.dao.PrivilegeMapper.BaseResultMap">
+  	
+  	<collection 
+  		property="sons"
+  		column="id"
+  		select="selectByParentId">
+  	</collection>
+  </resultMap>
+  
+  <!--根据用户的id查询拥有的权限  -->
+  <select id="selectByUserId" parameterType="long" resultMap="selectAllWithSons">
+    select p.*
+    from base_user u ,base_user_role ur, base_role r, base_role_privilege rp ,base_privilege p
+    where u.id = ur.user_id
+    and r.id = ur.role_id
+    and rp.role_id = r.id
+    and rp.privilege_id = p.id
+    and u.id = #{id,jdbcType=BIGINT}
+  </select>
+</mapper>

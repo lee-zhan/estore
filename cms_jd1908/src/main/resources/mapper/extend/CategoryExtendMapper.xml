@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.briup.apps.cms.dao.extend.CategoryExtendMapper">
+ <!--级联查询栏目的文章  -->
+  <resultMap
+          id="selectCategoryWithArticle"
+          type="com.briup.apps.cms.bean.extend.CategoryExtend"
+          extends="com.briup.apps.cms.dao.CategoryMapper.BaseResultMap">
+   
+    <!--通过栏目id查找文章-->
+    <collection
+            property="Articles"
+            column="id"
+            select="com.briup.apps.cms.dao.extend.ArticleExtendMapper.selectByCategoryId">
+    </collection>
+  </resultMap>
+ 
+  <!--级联查询栏目的子栏目  -->
+    <resultMap
+          id="selectByIdWithSon"
+          type="com.briup.apps.cms.bean.extend.CategoryExtend"
+          extends="com.briup.apps.cms.dao.CategoryMapper.BaseResultMap">
+   
+    <!--通过栏目id查找子栏目-->
+    <collection
+            property="Categorys"
+            column="id"
+            select="com.briup.apps.cms.dao.extend.CategoryExtendMapper.selectByParentId">
+    </collection>
+  </resultMap>
+  
+  
+  <select id="selectById" parameterType="long" resultMap="selectCategoryWithArticle">
+    SELECT *
+    FROM cms_category
+    WHERE id = #{id,jdbcType=BIGINT}
+  </select>
+  
+   <select id="findByIdWithSon" parameterType="long" resultMap="selectByIdWithSon">
+    SELECT *
+    FROM cms_category
+    WHERE id = #{id,jdbcType=BIGINT}
+  </select>
+  
+  <select id="selectByParentId" parameterType="long" resultType="com.briup.apps.cms.bean.extend.CategoryExtend">
+    SELECT *
+    FROM cms_category
+    WHERE parent_id = #{parent_id,jdbcType=BIGINT}
+  </select>
+  
+  <delete id="batchDelete" parameterType="String">
+    DELETE FROM  cms_category  WHERE id IN
+    <foreach collection="array" item="id" open="(" separator="," close=")">
+        #{id}
+    </foreach>
+</delete>
+
+</mapper>
